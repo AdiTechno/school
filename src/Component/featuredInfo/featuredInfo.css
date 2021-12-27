@@ -1,0 +1,34 @@
+.featured{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.featuredItem{
+    flex: 1;
+    margin: 0px 20px;
+    padding: 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow:
+        0 -3em 3em rgba(0,0,0,0.1),
+             0 0  0 2px rgb(255,255,255),
+             0.3em 0.3em 1em rgba(0,0,0,0.3);
+}
+.Title{
+       
+    justify-content: space-between;
+}
+.featuredTitle{
+    font-size: 20px;
+}
+.featuredcontainer{
+    margin: 10px;
+    display: flex;
+    align-items: center;
+}
+.fup{
+ color: green;
+}
+.fdown{
+    color: red;
+   }
