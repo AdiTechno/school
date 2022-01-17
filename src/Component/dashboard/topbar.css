@@ -20,3 +20,12 @@
 .topbaricons{
     cursor: pointer;
 }
+.footer{
+    text-align: center;
+    color: rgb(49, 9, 87);
+    font-family: 'Courier New', Courier;
+    font-size: small;
+    width: 100%;
+    height: 50px;
+    background-color: rgb(155, 209, 243);
+   }

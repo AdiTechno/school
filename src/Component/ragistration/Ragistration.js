@@ -1,59 +1,115 @@
-import React, {useEffect,useState} from 'react'
-import './ragistration.css'
-import { Form, Button } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import RegistrationEntry from './RegistrationEntry'
+import {Link} from 'react-router-dom'
+import axios from 'axios';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import { Button } from 'react-bootstrap'
+import {AgGridColumn, AgGridReact} from 'ag-grid-react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import FormDialog from './FormDialog';
 export default function Ragistration() {
-    const [formno, setFormno]=useState("");
-    const [name, setName]=useState("");
-    const [fname, setFname]=useState("");
-    const [mname, setMname]=useState("");
-    const [contact, setContact]=useState("");
-    const [email, setEmail]=useState("");
-    const [dob, setDob]=useState("");
-   function saveReg(e){
-    e.preventDefault();
-       console.warn(formno,name,fname,mname,email,contact,dob);
-     
-   }
+   const [open,setOpen]= useState(false);
+   const [formData, setFormData]= useState({formNo:"",sname:"",fname:"",mname:""})
+    const [reg, setReg] = useState([]);
+    
+    
+    useEffect(() => {
+        axios.get('http://schoolerp.schoolsupdate.co.in/api/StuRegistration/Getallregi').then((resp) => {
+           
+                setReg(resp.data.allstureg);
+                       
+        });
+    }, [])
+    console.warn(reg);
+    const columnDefs=[
+        {headerName: 'FORM NO', field:"formNo"},
+        {headerName: 'NAME', field:"sname"},
+        {headerName: 'FATHER NAME', field:"fname"},
+        {headerName: 'MOTHER NAME', field:"mname"},
+        {headerName: 'CLASS', field:"className"},
+        {headerName: 'CONTACT NO', field:"contactNo"},
+        {headerName: 'EMAIL ID', field:"email"},
+        {headerName: 'DATE OF BIRTH', field:"dob"},
+        {headerName: 'ACTION', field:"formNo", cellRendererFramework:(params)=>
+        <div><button variant="outlined" onClick={()=>actionUpdate(params.data)}><EditIcon style={{ color:"green" }}/></button> 
+       <span> <button variant="outlined" color="secondory"  onClick={()=>actionDelete(params)}><DeleteIcon style={{ color:"secondory" }}/></button> </span></div>
+        }
+    ]
+    const defaultColDef={
+       sortable:true, editable:true,filter:true, tooltipField:"sname"
+    }
+    const actionUpdate=(oldData)=>{
+        setOpen(true);
+        setFormData(oldData);
+          
+    }
+    const onChange=(e)=>{
+        const {value,id}=e.target
+        setFormData({...formData,[id]:value})
+        //console.log(value,id)
+    }
+    const updateData=()=>{
+        
+        console.log(formData)
+    };
+    const handleClose = () => {
+          setOpen(false);
+        };
+    const actionDelete=(params)=>{
+        console.log(params);
+        alert(params.data.sname + " "+  params.data.entryNo) 
+    }
     return (
-        <div className='reg'>
-            <div className="Container">
-                <div className="Row">
-                    <h3>Registration Form</h3>
-                </div>
-            </div>
-            <hr/><br/>
-        <div className="form-container">
-            <Form className="signup-form">
-                <Form.Group >
-                <Form.Control className="name-input" type="text" placeholder="Form No" value={formno} onChange={(e)=>{setFormno(e.target.value)}} name="formno"></Form.Control><br/>
-                    <Form.Control className="name-input" type="text" placeholder="Name" value={name} onChange={(e)=>{setName(e.target.value)}} name="name"></Form.Control><br/>
-                    <Form.Select aria-label="Default select example">
-                                    <option>Select Class</option>
-                                    <option value="1">I</option>
-                                    <option value="2">II</option>
-                                    <option value="3">III</option>
-                                    <option value="4">IV</option>
-                                    <option value="5">V</option>
-                                    <option value="6">VI</option>
-                    </Form.Select><br/>
-                    <div className='gender'>
-                        <h5>Gender</h5>
-                        <Form.Check.Input type="radio" />
-                        <Form.Check.Label className='mgender'>{`Male`}</Form.Check.Label>
-                        <Form.Check.Input className='fgender' type="radio" />
-                        <Form.Check.Label className='mgender'>{`Female`}</Form.Check.Label>
-                    </div>
-                    <br/>
-                    <br/>
-                    <Form.Control className="name-input" type="text" placeholder="Father Name" value={fname} onChange={(e)=>{setFname(e.target.value)}} name="fname"></Form.Control><br/>
-                    <Form.Control className="name-input" type="text" placeholder="Mother Name" value={mname} onChange={(e)=>{setMname(e.target.value)}} name="mname"></Form.Control><br/>
-                    <Form.Control className="name-input" type="text" placeholder="Contact No" value={contact} onChange={(e)=>{setContact(e.target.value)}} name="contact"></Form.Control><br/>
-                    <Form.Control className="email-input" type="text" placeholder="Email" value={email} onChange={(e)=>{setEmail(e.target.value)}} name="email" ></Form.Control><br/>
-                    <Form.Control className="name-input" type="text" placeholder="Date of Birth" value={dob} onChange={(e)=>{setDob(e.target.value)}} name="dob"></Form.Control><br/>
-                    <Button className="submit-button" value="submit" type="submit" onClick={(e)=>saveReg(e)}>submit</Button>
-                </Form.Group>
-            </Form>
+        <div className='registration'>
+                <Link className="nav-link active" aria-current="page" to="/newregistration"><AddIcon className="sidebarIcon"/>New Registration</Link>
+                <br/>
+            {/* <Button className="submit-button" value="new" type="button" onClick={"newreg"}>New Registration
+            
+            </Button> */}
+            {/* <table className='table'>
+
+                <tr>
+                    <td>Form No</td>
+                    <td>Name</td>
+                    <td>Fathers Name</td>
+                    <td>Mothers Name</td>
+                    <td>..</td>
+                </tr>
+
+                {reg.map((item,index)=>
+                    <tr key={index}>
+                    <td>{item.formNo}</td>
+                            <td>{item.sname}</td>
+                            <td>{item.fname}</td>
+                            <td>{item.mname}</td>
+                            <td> <EditIcon style={{ fontSize: 35 }}/> <span><DeleteIcon style={{ fontSize: 35 }}/></span></td>
+                            
+                    </tr>
+                )
+                }
+                
+            </table> */}
+            {/* <RegistrationEntry/> */}
+            <div className="ag-theme-alpine" style={{height: 300, textAlign:"left"}}>
+           {/* <AgGridReact
+               rowData={reg}>
+               <AgGridColumn headerName= 'FORM NO' field="formNo"></AgGridColumn>
+               <AgGridColumn headerName= 'NAME' field="sname"></AgGridColumn>
+               <AgGridColumn headerName= 'FATHER NAME' field="fname"></AgGridColumn>
+               <AgGridColumn headerName= 'MOTHER NAME' field="mname"></AgGridColumn>
+               <AgGridColumn headerName= 'ACTION' field="formNo" cellRendererFramework={<div><EditIcon style={{ fontSize: 35 }}/></div>} ></AgGridColumn>
+           </AgGridReact> */}
+            <AgGridReact rowData={reg} columnDefs={columnDefs} defaultColDef={defaultColDef}/>
+               
+       </div>
+       
+       
+       {open && <FormDialog open={open} handleClose={handleClose} data={formData} onChange={onChange} updateData={updateData}/>}
+       
         </div>
-        </div>  
     )
 }

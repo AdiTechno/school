@@ -1,11 +1,11 @@
 .App {
-  
   text-align: center;
+  display: flex;
 }
 .container{
-  display: flex;
- 
-  }
+  text-align: center;
+  
+}
 .others{
   flex: 4;
   
