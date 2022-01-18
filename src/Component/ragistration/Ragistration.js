@@ -11,9 +11,11 @@ import {AgGridColumn, AgGridReact} from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import FormDialog from './FormDialog';
+import Moment from 'moment';
 export default function Ragistration() {
+    const initialValue = {formNo:"",sname:"",fname:"",mname:""}
    const [open,setOpen]= useState(false);
-   const [formData, setFormData]= useState({formNo:"",sname:"",fname:"",mname:""})
+   const [formData, setFormData]= useState(initialValue)
     const [reg, setReg] = useState([]);
     
     
@@ -33,10 +35,12 @@ export default function Ragistration() {
         {headerName: 'CLASS', field:"className"},
         {headerName: 'CONTACT NO', field:"contactNo"},
         {headerName: 'EMAIL ID', field:"email"},
-        {headerName: 'DATE OF BIRTH', field:"dob"},
+        {headerName: 'DATE OF BIRTH', field:"dob",cellRenderer:(data)=>{
+            return Moment(data. dob). format('DD/MM/YYYY')
+        }},
         {headerName: 'ACTION', field:"formNo", cellRendererFramework:(params)=>
-        <div><button variant="outlined" onClick={()=>actionUpdate(params.data)}><EditIcon style={{ color:"green" }}/></button> 
-       <span> <button variant="outlined" color="secondory"  onClick={()=>actionDelete(params)}><DeleteIcon style={{ color:"secondory" }}/></button> </span></div>
+        <div><button variant="outlined" onClick={()=>actionUpdate(params.data)}><EditIcon style={{ color:"green"}}/></button> 
+       <span> <button variant="outlined" color="secondory"  onClick={()=>actionDelete(params)}><DeleteIcon style={{ color:"secondory"}}/></button> </span></div>
         }
     ]
     const defaultColDef={
